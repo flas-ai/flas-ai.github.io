@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>FLAS — Flow-based Activation Steering</title>
+  <meta name="description"
+        content="FLAS learns a concept-conditioned velocity field that transports an unsteered LLM activation to a steered one. The first learned steering method to consistently beat in-context prompting on AxBench.">
+
+  <!-- KaTeX -->
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css"
+        integrity="sha384-wcIxkf4k558AjM3Yz3BBFQUbk/zgIYC2R0QpeeYb+TwlBVMrlgLqwRjRtGZiK7ww"
+        crossorigin="anonymous">
+  <script defer
+          src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js"
+          integrity="sha384-hIoBPJpTUs74ddyc4bFZSM1TVlQDA60VBbJS0oA934VSz82sBx1X7kSx2ATBDIyd"
+          crossorigin="anonymous"></script>
+  <script defer
+          src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js"
+          integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk"
+          crossorigin="anonymous"
+          onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+
+  <!-- Plotly — gl3d-only build (1.7 MB vs 4.4 MB full bundle).
+       We only use scatter3d on this page, so the partial bundle is enough. -->
+  <script src="https://cdn.jsdelivr.net/npm/plotly.js-gl3d-dist-min@2.35.2/plotly-gl3d.min.js"
+          charset="utf-8"></script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="css/site.css">
+  <link rel="icon" type="image/png" href="assets/icon.png">
+</head>
+<body>
+
+<!-- ============================================================ NAV -->
+<aside class="sidenav" aria-label="Page navigation">
+  <div class="sidenav-inner">
+    <a class="sidenav-brand" href="#top" aria-label="FLAS — home">
+      <img class="brand-logo" src="assets/icon.png" alt="FLAS">
+    </a>
+    <nav>
+      <ul class="sidenav-list">
+        <li><a href="#how"        data-num="1">How it works</a></li>
+        <li><a href="#trajectory" data-num="2">The flow in 3D</a></li>
+        <li><a href="#studio"     data-num="3">FlowTime studio</a></li>
+        <li><a href="#curves"     data-num="4">Strength control</a></li>
+        <li><a href="#demo"       data-num="5">Live demo</a></li>
+        <li><a href="#cite"       data-num="6">Citation</a></li>
+      </ul>
+    </nav>
+    <div class="sidenav-foot">
+      <a href="https://github.com/flas-ai/FLAS"   class="sidenav-link">GitHub ↗</a>
+      <a href="https://arxiv.org/abs/2605.05892"  class="sidenav-link">arXiv ↗</a>
+      <a href="https://huggingface.co/spaces/Lunamos/flas-demo" class="sidenav-link">🤗 Demo ↗</a>
+    </div>
+  </div>
+</aside>
+
+<main class="main-col">
+<a id="top"></a>
+
+<!-- ============================================================ HERO -->
+<header class="hero">
+  <div class="container narrow">
+    <div class="hero-eyebrow">arXiv 2605.05892 · 2026</div>
+    <h1 class="hero-title">
+      Beyond Steering Vectors:<br>
+      <span class="accent">Flow-based Activation Steering</span> for
+      Inference-Time Intervention
+    </h1>
+
+    <div class="authors">
+      <span>Zehao Jin</span>
+      <span>Ruixuan Deng</span>
+      <span>Junran Wang</span>
+      <span>Xinjie Shen</span>
+      <span>Chao Zhang</span>
+    </div>
+
+    <div class="badges">
+      <a class="badge" href="https://arxiv.org/abs/2605.05892">
+        <span class="badge-key">arXiv</span><span class="badge-val">2605.05892</span>
+      </a>
+      <a class="badge" href="https://github.com/flas-ai/FLAS">
+        <span class="badge-key">Code</span><span class="badge-val">flas-ai/FLAS</span>
+      </a>
+      <a class="badge" href="https://huggingface.co/flas-ai/flas-gemma-2-2b-it">
+        <span class="badge-key">🤗 Model</span><span class="badge-val">2B</span>
+      </a>
+      <a class="badge" href="https://huggingface.co/flas-ai/flas-gemma-2-9b-it">
+        <span class="badge-key">🤗 Model</span><span class="badge-val">9B</span>
+      </a>
+      <a class="badge primary" href="https://huggingface.co/spaces/Lunamos/flas-demo">
+        <span class="badge-key">🤗 Demo</span><span class="badge-val">try it →</span>
+      </a>
+    </div>
+
+    <p class="tldr">
+      FLAS learns a concept-conditioned velocity field
+      $v_\theta(h, t, c)$ that transports an unsteered LLM activation $h$
+      into a steered one by integrating a flow ODE. The flow time $T$ is a
+      <em>continuous, zero-shot strength knob</em>. FLAS is the first
+      learned steering method to consistently beat in-context prompting on
+      AxBench.
+    </p>
+
+    <figure class="hero-figure">
+      <img src="assets/main.png" alt="FLAS overview diagram">
+    </figure>
+  </div>
+</header>
+
+<!-- ===================================================== HOW IT WORKS -->
+<section id="how" class="section">
+  <div class="container narrow">
+    <h2><span class="section-num">1</span> How it works</h2>
+
+    <p>
+      Conventional activation steering adds a fixed direction
+      $h \mapsto h + \alpha v$. This is a single Euler step from a single
+      offset — it ignores where you are in activation space.
+      FLAS instead learns a velocity field
+      conditioned on the concept embedding $c$ and on a continuous flow
+      time $t \in [0, T]$:
+    </p>
+
+    <div class="equation">
+      $$h' \;=\; \varphi_T(h) \;=\; h \;+\; \int_0^T v_\theta\!\bigl(\varphi_t(h),\, t,\, c\bigr)\, dt.$$
+    </div>
+
+    <p>
+      We integrate this ODE with a few Euler steps at the chosen layer
+      during the LM's normal forward pass. Because we sample
+      $T \sim \mathrm{U}[T_\min, T_\max]$ during training, a <em>single
+      checkpoint</em> exposes a continuous <em>strength knob</em> at
+      inference — no per-strength fine-tuning, no per-concept training.
+    </p>
+
+    <div class="callouts">
+      <div class="callout">
+        <div class="callout-tag">Concept-conditioned</div>
+        <p>One frozen base LM, one ConceptEncoder. Any new concept is
+        just a text prompt &mdash; no per-concept optimisation.</p>
+      </div>
+      <div class="callout">
+        <div class="callout-tag">Continuous strength</div>
+        <p>Slide $T$ from 0 (no steering) to ~3 (saturated). Trained
+        once, dialed at inference.</p>
+      </div>
+      <div class="callout">
+        <div class="callout-tag">Beats prompting</div>
+        <p>First learned steering method to consistently outperform
+        in-context prompting on AxBench Concept16k held-out splits.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================ INTERACTIVE 3D PLOT -->
+<section id="trajectory" class="section section-tinted">
+  <div class="container">
+    <div class="narrow">
+      <h2><span class="section-num">2</span> The flow, in 3D</h2>
+      <p>
+        Each polyline traces an LLM activation's <em>displacement</em> as
+        we integrate the FLAS ODE for one (concept&nbsp;×&nbsp;prompt) pair
+        at FlowTime <code>T = 2.0</code>, projected onto the top three
+        principal components fit jointly across all trajectories. Drag to
+        rotate; click a concept in the legend to hide its trajectories;
+        hover any point to see what the model is steering toward.
+      </p>
+    </div>
+
+    <div class="plot-card">
+      <div id="traj-plot" class="plot"></div>
+      <div class="plot-meta" id="traj-meta">Loading trajectory data…</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================ FLOWTIME STUDIO -->
+<section id="studio" class="section">
+  <div class="container narrow">
+    <h2><span class="section-num">3</span> FlowTime studio</h2>
+    <p>
+      Pick a held-out concept and a prompt, then drag the FlowTime
+      slider — the steered generation morphs in real time. The C / I / F
+      bars are the AxBench GPT-4o-mini judge's per-factor scores
+      (Concept, Instruction-following, Fluency, each $\in \{0,1,2\}$).
+    </p>
+
+    <div class="studio">
+      <div class="studio-pickers">
+        <label class="control">
+          <span class="control-label">Concept</span>
+          <select id="studio-concept"></select>
+        </label>
+        <label class="control">
+          <span class="control-label">Prompt</span>
+          <select id="studio-prompt"></select>
+        </label>
+        <label class="control">
+          <span class="control-label" id="studio-flowtime-label">FlowTime <code>T = 2.0</code></span>
+          <input id="studio-slider" type="range" min="0" max="7" step="1" value="3">
+        </label>
+      </div>
+
+      <div class="studio-card">
+        <div class="studio-header">
+          <div>
+            <div class="studio-meta-line"><span class="dim">Concept:</span> <span id="studio-concept-text"></span></div>
+            <div class="studio-meta-line"><span class="dim">Prompt:</span> <span id="studio-prompt-text"></span></div>
+          </div>
+          <div class="studio-scores" id="studio-scores"></div>
+        </div>
+        <div class="studio-output" id="studio-output">…</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================== PER-DOSE -->
+<section id="curves" class="section section-tinted">
+  <div class="container narrow">
+    <h2><span class="section-num">4</span> Continuous strength control</h2>
+    <p>
+      A single FLAS checkpoint exposes a continuous strength knob —
+      sweeping FlowTime $T$ smoothly trades concept-following for
+      fluency, with no per-strength fine-tuning. Below: AxBench C / I / F
+      and overall HMean across the FlowTime range, comparing FLAS
+      against three steering baselines (ReFT-r1, DiffMean, AcT).
+    </p>
+
+    <figure class="paper-figure">
+      <img src="assets/cif_tradeoff.png"
+           alt="C/I/F/HMean vs Flow time, FLAS held-in/held-out vs ReFT-r1, DiffMean, AcT">
+      <figcaption>
+        FLAS (held-in &amp; held-out) maintains high Concept score while
+        keeping Instruction-following and Fluency near baseline across
+        the full FlowTime range; baselines collapse on at least one
+        factor as the dose increases.
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- =========================================================== TRY IT -->
+<section id="demo" class="section">
+  <div class="container narrow">
+    <h2><span class="section-num">5</span> Try the live demo</h2>
+    <p>
+      Hosted on Hugging Face Spaces with a ZeroGPU slice — type any
+      concept (e.g. <em>"talk like a pirate"</em>) and a prompt, then
+      compare the steered and baseline outputs side by side.
+    </p>
+
+    <div class="demo-card">
+      <div class="demo-card-head">
+        <span class="demo-tag">🤗 Spaces</span>
+        <span>Lunamos / flas-demo</span>
+        <a class="demo-open" href="https://huggingface.co/spaces/Lunamos/flas-demo"
+           target="_blank" rel="noopener">open in new tab ↗</a>
+      </div>
+      <div class="demo-iframe-wrap">
+        <iframe src="https://lunamos-flas-demo.hf.space"
+                title="FLAS demo on Hugging Face Spaces"
+                loading="lazy"
+                frameborder="0"
+                allow="accelerometer; autoplay; camera; gyroscope; microphone; clipboard-read; clipboard-write"
+                width="100%"
+                height="560"></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================================================= CITATION -->
+<section id="cite" class="section">
+  <div class="container narrow">
+    <h2><span class="section-num">6</span> Citation</h2>
+    <pre class="bibtex"><code>@article{flas2026,
+  title  = {Beyond Steering Vector: Flow-based Activation Steering for Inference-Time Intervention},
+  author = {Zehao Jin and Ruixuan Deng and Junran Wang and Xinjie Shen and Chao Zhang},
+  year   = {2026},
+  eprint = {2605.05892},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  url    = {https://arxiv.org/abs/2605.05892},
+}</code></pre>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container narrow">
+    <div>FLAS &middot; Apache 2.0 &middot;
+      <a href="https://github.com/flas-ai/FLAS">GitHub</a> &middot;
+      <a href="https://huggingface.co/flas-ai">🤗 flas-ai</a>
+    </div>
+    <div class="footer-dim">
+      Page built from <code>scripts/export_trajectories_for_web.py</code>
+      &amp; <code>scripts/export_eval_for_web.py</code>.
+    </div>
+  </div>
+</footer>
+
+</main>
+
+<script type="module" src="js/trajectory.js"></script>
+<script type="module" src="js/studio.js"></script>
+<script type="module" src="js/sidenav.js"></script>
+</body>
+</html>
