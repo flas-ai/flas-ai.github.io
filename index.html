@@ -137,7 +137,7 @@
     <p>
       We integrate this ODE with a few Euler steps at the chosen layer
       during the LM's normal forward pass. Because we sample
-      $T \sim \mathrm{U}[T_\min, T_\max]$ during training, a <em>single
+      $T \sim \mathrm{U}[T_{\min}, T_{\max}]$ during training, a <em>single
       checkpoint</em> exposes a continuous <em>strength knob</em> at
       inference — no per-strength fine-tuning, no per-concept training.
     </p>
@@ -164,18 +164,16 @@
 
 <!-- ============================================ INTERACTIVE 3D PLOT -->
 <section id="trajectory" class="section section-tinted">
-  <div class="container">
-    <div class="narrow">
-      <h2><span class="section-num">2</span> The flow, in 3D</h2>
-      <p>
-        Each polyline traces an LLM activation's <em>displacement</em> as
-        we integrate the FLAS ODE for one (concept&nbsp;×&nbsp;prompt) pair
-        at FlowTime <code>T = 2.0</code>, projected onto the top three
-        principal components fit jointly across all trajectories. Drag to
-        rotate; click a concept in the legend to hide its trajectories;
-        hover any point to see what the model is steering toward.
-      </p>
-    </div>
+  <div class="container narrow">
+    <h2><span class="section-num">2</span> The flow, in 3D</h2>
+    <p>
+      Each polyline traces an LLM activation's <em>displacement</em> as
+      we integrate the FLAS ODE for one (concept&nbsp;×&nbsp;prompt) pair
+      at FlowTime <code>T = 2.0</code>, projected onto the top three
+      principal components fit jointly across all trajectories. Drag to
+      rotate; click a concept in the legend to hide its trajectories;
+      hover any point to see what the model is steering toward.
+    </p>
 
     <div class="plot-card">
       <div id="traj-plot" class="plot"></div>
