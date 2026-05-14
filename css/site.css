@@ -240,6 +240,13 @@ code {
 }
 
 .hero-title .accent { color: var(--accent); }
+.hero-title strong { font-weight: 700; }
+.authors sup {
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 0.7em;
+  margin-left: 1px;
+}
 
 .authors {
   display: flex;
