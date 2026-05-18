@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>FLAS — Flow-based Activation Steering</title>
+  <title>FLAS: Flow-based Activation Steering</title>
   <meta name="description"
-        content="FLAS learns a concept-conditioned velocity field that transports an unsteered LLM activation to a steered one. The first learned steering method to consistently beat in-context prompting on AxBench.">
+        content="FLAS learns a concept-conditioned velocity field that transports an unsteered LLM activation to a steered one. The first learned steering method to consistently outperform in-context prompting on AxBench.">
 
   <!-- KaTeX -->
   <link rel="stylesheet"
@@ -35,23 +35,33 @@
 
   <link rel="stylesheet" href="css/site.css">
   <link rel="icon" type="image/png" href="assets/icon.png">
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-NQ4373CS41"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-NQ4373CS41');
+  </script>
 </head>
 <body>
 
 <!-- ============================================================ NAV -->
 <aside class="sidenav" aria-label="Page navigation">
   <div class="sidenav-inner">
-    <a class="sidenav-brand" href="#top" aria-label="FLAS — home">
+    <a class="sidenav-brand" href="#top" aria-label="FLAS home">
       <img class="brand-logo" src="assets/icon.png" alt="FLAS">
     </a>
     <nav>
       <ul class="sidenav-list">
         <li><a href="#how"        data-num="1">How it works</a></li>
-        <li><a href="#trajectory" data-num="2">The flow in 3D</a></li>
-        <li><a href="#studio"     data-num="3">FlowTime studio</a></li>
-        <li><a href="#curves"     data-num="4">Strength control</a></li>
-        <li><a href="#demo"       data-num="5">Live demo</a></li>
-        <li><a href="#cite"       data-num="6">Citation</a></li>
+        <li><a href="#results"    data-num="2">Results on AxBench</a></li>
+        <li><a href="#trajectory" data-num="3">The flow in 3D</a></li>
+        <li><a href="#studio"     data-num="4">Steering studio</a></li>
+        <li><a href="#curves"     data-num="5">Strength control</a></li>
+        <li><a href="#demo"       data-num="6">Live demo</a></li>
+        <li><a href="#cite"       data-num="7">Citation</a></li>
       </ul>
     </nav>
     <div class="sidenav-foot">
@@ -102,12 +112,16 @@
     </div>
 
     <p class="tldr">
-      FLAS learns a concept-conditioned velocity field
-      $v_\theta(h, t, c)$ that transports an unsteered LLM activation $h$
-      into a steered one by integrating a flow ODE. The flow time $T$ is a
-      <em>continuous, zero-shot strength knob</em>. FLAS is the first
-      learned steering method to consistently beat in-context prompting on
-      AxBench.
+      FLAS is a natural-language activation-steering method for
+      LLMs. Where prior work like <em>Golden Gate Claude</em> had to
+      commit to a single behavior in advance, FLAS learns a single general
+      concept-conditioned velocity field $v_\theta(h, t, c)$ that
+      transports an unsteered activation $h$ to a steered one through
+      $N$-step Euler integration. At inference you hand it any
+      natural-language concept $c$ and it produces the right
+      inference-time intervention. A single checkpoint handles thousands of
+      unseen concepts, and is the first learned steering method to
+      consistently outperform in-context prompting on AxBench.
     </p>
 
     <figure class="hero-figure">
@@ -123,9 +137,9 @@
 
     <p>
       Conventional activation steering adds a fixed direction
-      $h \mapsto h + \alpha v$. This is a single Euler step from a single
-      offset — it ignores where you are in activation space.
-      FLAS instead learns a velocity field
+      $h \mapsto h + \alpha v$. This is a single Euler step from a
+      single offset, ignoring where the activation sits in
+      representation space. FLAS instead learns a velocity field
       conditioned on the concept embedding $c$ and on a continuous flow
       time $t \in [0, T]$:
     </p>
@@ -135,44 +149,77 @@
     </div>
 
     <p>
-      We integrate this ODE with a few Euler steps at the chosen layer
-      during the LM's normal forward pass. Because we sample
-      $T \sim \mathrm{U}[T_{\min}, T_{\max}]$ during training, a <em>single
-      checkpoint</em> exposes a continuous <em>strength knob</em> at
-      inference — no per-strength fine-tuning, no per-concept training.
+      We approximate this integral with $N$-step Euler integration at
+      the chosen layer during the LM's normal forward pass. Because we
+      sample $T \sim \mathrm{Uniform}[T_{\min}, T_{\max}]$ during
+      training, a <em>single checkpoint</em> exposes continuous
+      steering-strength control at inference. No per-strength
+      fine-tuning, no per-concept training, no contrastive pairs.
     </p>
 
     <div class="callouts">
       <div class="callout">
         <div class="callout-tag">Concept-conditioned</div>
-        <p>One frozen base LM, one ConceptEncoder. Any new concept is
-        just a text prompt &mdash; no per-concept optimisation.</p>
+        <p>One frozen base LM, one frozen concept encoder, one
+        FlowBlock. Any new concept is just a text prompt. No
+        per-concept training.</p>
       </div>
       <div class="callout">
         <div class="callout-tag">Continuous strength</div>
-        <p>Slide $T$ from 0 (no steering) to ~3 (saturated). Trained
-        once, dialed at inference.</p>
+        <p>Flow time $T$ controls steering strength. Trained with
+        $T \sim \mathrm{Uniform}[0.5, 2.0]$. Performance stays stable
+        across $T \in [0.5, 4.0]$ at inference without per-concept
+        tuning.</p>
       </div>
       <div class="callout">
-        <div class="callout-tag">Beats prompting</div>
+        <div class="callout-tag">Outperforms prompting</div>
         <p>First learned steering method to consistently outperform
-        in-context prompting on AxBench Concept16k held-out splits.</p>
+        in-context prompting on AxBench Concept16k, on both Gemma-2-2B
+        and 9B-IT.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ============================================ INTERACTIVE 3D PLOT -->
-<section id="trajectory" class="section section-tinted">
+<!-- ============================================ AXBENCH RESULTS -->
+<section id="results" class="section section-tinted">
   <div class="container narrow">
-    <h2><span class="section-num">2</span> The flow, in 3D</h2>
+    <h2><span class="section-num">2</span> Results on AxBench</h2>
     <p>
-      Each polyline traces an LLM activation's <em>displacement</em> as
-      we integrate the FLAS ODE for one (concept&nbsp;×&nbsp;prompt) pair
-      at FlowTime <code>T = 2.0</code>, projected onto the top three
-      principal components fit jointly across all trajectories. Drag to
-      rotate; click a concept in the legend to hide its trajectories;
-      hover any point to see what the model is steering toward.
+      On AxBench's Concept16k held-out split, evaluated strictly
+      zero-shot on concepts never seen during training, FLAS is the
+      first learned steering method to consistently outperform
+      in-context prompting on both Gemma-2-2B-IT and Gemma-2-9B-IT, at
+      a single fixed flow time $T = 2$ with no per-concept tuning.
+    </p>
+
+    <figure class="paper-figure">
+      <img src="assets/scores.png"
+           alt="Held-in HMean bar chart on Gemma-2-2B-IT plus the full AxBench results table on Gemma-2-2B-IT and Gemma-2-9B-IT, with FLAS leading both held-in and held-out columns.">
+      <figcaption>
+        Held-in harmonic mean on Gemma-2-2B-IT (left) and full AxBench
+        results on both models (right). FLAS reaches held-out HMean
+        $1.015$ on Gemma-2-2B-IT and $1.113$ on Gemma-2-9B-IT,
+        exceeding in-context prompting ($0.762\,/\,1.091$) and
+        HyperSteer ($0.608\,/\,0.934$). Baselines reproduced from
+        AxBench and HyperSteer.
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============================================ INTERACTIVE 3D PLOT -->
+<section id="trajectory" class="section">
+  <div class="container narrow">
+    <h2><span class="section-num">3</span> The flow, in 3D</h2>
+    <p>
+      Each polyline traces an activation's <em>displacement</em> as the
+      learned velocity field $v_\theta$ is integrated for one
+      (concept&nbsp;×&nbsp;prompt) pair at flow time $T = 2$, projected
+      onto the top three principal components fit jointly across all
+      trajectories. Drag to rotate. Click a concept in the legend to
+      hide its trajectories. Hover any point to see what the model is
+      steering toward.
     </p>
 
     <div class="plot-card">
@@ -182,15 +229,16 @@
   </div>
 </section>
 
-<!-- ================================================ FLOWTIME STUDIO -->
-<section id="studio" class="section">
+<!-- ================================================ STEERING STUDIO -->
+<section id="studio" class="section section-tinted">
   <div class="container narrow">
-    <h2><span class="section-num">3</span> FlowTime studio</h2>
+    <h2><span class="section-num">4</span> Steering studio</h2>
     <p>
-      Pick a held-out concept and a prompt, then drag the FlowTime
-      slider — the steered generation morphs in real time. The C / I / F
-      bars are the AxBench GPT-4o-mini judge's per-factor scores
-      (Concept, Instruction-following, Fluency, each $\in \{0,1,2\}$).
+      Pick a held-out concept and a prompt, then move the flow time
+      slider. The steered output updates with $T$. The
+      C&nbsp;/&nbsp;I&nbsp;/&nbsp;F bars are the AxBench GPT-4o-mini
+      judge's per-factor scores: Concept incorporation, Instruction
+      following, Fluency, each $\in \{0, 1, 2\}$.
     </p>
 
     <div class="studio">
@@ -204,7 +252,7 @@
           <select id="studio-prompt"></select>
         </label>
         <label class="control">
-          <span class="control-label" id="studio-flowtime-label">FlowTime <code>T = 2.0</code></span>
+          <span class="control-label" id="studio-flowtime-label">Flow time <code>T = 2.0</code></span>
           <input id="studio-slider" type="range" min="0" max="7" step="1" value="3">
         </label>
       </div>
@@ -223,38 +271,41 @@
   </div>
 </section>
 
-<!-- ====================================================== PER-DOSE -->
-<section id="curves" class="section section-tinted">
+<!-- ============================================ STRENGTH CONTROL -->
+<section id="curves" class="section">
   <div class="container narrow">
-    <h2><span class="section-num">4</span> Continuous strength control</h2>
+    <h2><span class="section-num">5</span> Continuous strength control</h2>
     <p>
-      A single FLAS checkpoint exposes a continuous strength knob —
-      sweeping FlowTime $T$ smoothly trades concept-following for
-      fluency, with no per-strength fine-tuning. Below: AxBench C / I / F
-      and overall HMean across the FlowTime range, comparing FLAS
-      against three steering baselines (ReFT-r1, DiffMean, AcT).
+      A single FLAS checkpoint exposes continuous strength control
+      through the flow time $T$. Across $T \in [0.5, 4.0]$, FLAS
+      steadily improves concept incorporation while keeping instruction
+      following and fluency near baseline. Three steering baselines
+      (ReFT-r1, DiffMean, AcT) instead collapse on at least one factor
+      as the steering strength increases.
     </p>
 
     <figure class="paper-figure">
       <img src="assets/cif_tradeoff.png"
-           alt="C/I/F/HMean vs Flow time, FLAS held-in/held-out vs ReFT-r1, DiffMean, AcT">
+           alt="Score decomposition (Concept incorporation, Instruction following, Fluency, HMean) versus flow time T, with FLAS held-in and held-out compared against ReFT-r1, DiffMean, and AcT on Gemma-2-9B-IT.">
       <figcaption>
-        FLAS (held-in &amp; held-out) maintains high Concept score while
-        keeping Instruction-following and Fluency near baseline across
-        the full FlowTime range; baselines collapse on at least one
-        factor as the dose increases.
+        Score decomposition across flow time $T$ on Gemma-2-9B-IT,
+        layer 20. FLAS held-in (purple) and held-out (blue) climb in
+        concept incorporation while keeping instruction following and
+        fluency near baseline. ReFT-r1, DiffMean, and AcT collapse on
+        at least one factor as the steering strength increases.
+        Shaded bands show $\pm 1$ std.
       </figcaption>
     </figure>
   </div>
 </section>
 
 <!-- =========================================================== TRY IT -->
-<section id="demo" class="section">
+<section id="demo" class="section section-tinted">
   <div class="container narrow">
-    <h2><span class="section-num">5</span> Try the live demo</h2>
+    <h2><span class="section-num">6</span> Try the live demo</h2>
     <p>
-      Hosted on Hugging Face Spaces with a ZeroGPU slice — type any
-      concept (e.g. <em>"talk like a pirate"</em>) and a prompt, then
+      Hosted on Hugging Face Spaces with a ZeroGPU slice. Type any
+      concept (e.g. <em>talk like a pirate</em>) and a prompt, then
       compare the steered and baseline outputs side by side.
     </p>
 
@@ -281,7 +332,7 @@
 <!-- ========================================================= CITATION -->
 <section id="cite" class="section">
   <div class="container narrow">
-    <h2><span class="section-num">6</span> Citation</h2>
+    <h2><span class="section-num">7</span> Citation</h2>
     <pre class="bibtex"><code>@article{flas2026,
   title  = {Beyond Steering Vector: Flow-based Activation Steering for Inference-Time Intervention},
   author = {Zehao Jin and Ruixuan Deng and Junran Wang and Xinjie Shen and Chao Zhang},

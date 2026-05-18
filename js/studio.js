@@ -55,11 +55,11 @@ function renderActive() {
   promptText.textContent  = entry.prompt;
 
   const dose = DOSES[+slider.value];
-  ftLabel.innerHTML = `FlowTime <code>T = ${dose.toFixed(1)}</code>`;
+  ftLabel.innerHTML = `Flow time <code>T = ${dose.toFixed(1)}</code>`;
 
   const payload = entry.by_dose[dose.toFixed(1)];
   if (!payload) {
-    output.textContent = '(no judged sample at this dose)';
+    output.textContent = '(no judged sample at this flow time)';
     scoresBox.innerHTML = '';
     return;
   }

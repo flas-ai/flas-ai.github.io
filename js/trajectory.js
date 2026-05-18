@@ -62,8 +62,8 @@ function buildTraces(data) {
         const stepHint = k === 0
           ? '<i>start</i> · no steering yet'
           : (k === t.points.length - 1
-              ? `<i>endpoint</i> · FlowTime t = ${tk.toFixed(2)}`
-              : `FlowTime t = ${tk.toFixed(2)}`);
+              ? `<i>endpoint</i> · t = ${tk.toFixed(2)}`
+              : `t = ${tk.toFixed(2)}`);
         hover.push(
           `<b>${escapeHtml(concept.label)}</b><br>` +
           `<span style="color:#9aa1a4">${escapeHtml(clip(longText, 90))}</span><br>` +
@@ -84,7 +84,7 @@ function buildTraces(data) {
         (promptStr
           ? `<span style="color:#9aa1a4">prompt: ${escapeHtml(clip(promptStr, 80))}</span><br>`
           : '') +
-        `<i>endpoint</i> · FlowTime t = ${TARGET_DOSE.toFixed(2)}<extra></extra>`,
+        `<i>endpoint</i> · t = ${TARGET_DOSE.toFixed(2)}<extra></extra>`,
       );
     }
 
@@ -119,7 +119,7 @@ function buildTraces(data) {
     x: [data.origin[0]], y: [data.origin[1]], z: [data.origin[2]],
     marker: { size: 5, color: '#000', symbol: 'circle' },
     name: 'origin (no steering)',
-    hovertemplate: '<b>origin</b><br>FlowTime t = 0<br>(no steering)<extra></extra>',
+    hovertemplate: '<b>origin</b><br>t = 0 · no steering<extra></extra>',
     showlegend: true,
   });
 
