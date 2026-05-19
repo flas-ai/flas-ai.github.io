@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://flas-ai.github.io/</loc>
+    <lastmod>2026-05-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://flas-ai.github.io/assets/main.png</image:loc>
+      <image:title>FLAS overview diagram</image:title>
+      <image:caption>Flow-based Activation Steering: a concept-conditioned velocity field transports unsteered LLM activations to steered activations.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://flas-ai.github.io/assets/scores.png</image:loc>
+      <image:title>AxBench results</image:title>
+      <image:caption>FLAS results on AxBench Concept16k for Gemma-2-2B-IT and Gemma-2-9B-IT.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://flas-ai.github.io/assets/cif_tradeoff.png</image:loc>
+      <image:title>Concept / Instruction / Fluency tradeoff vs flow time T</image:title>
+      <image:caption>Score decomposition across flow time T on Gemma-2-9B-IT, layer 20.</image:caption>
+    </image:image>
+  </url>
+</urlset>

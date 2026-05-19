@@ -1,0 +1,18 @@
+User-agent: *
+Allow: /
+
+# AI / LLM crawlers — explicitly allowed (this is a public research page)
+User-agent: GPTBot
+Allow: /
+User-agent: ClaudeBot
+Allow: /
+User-agent: Claude-Web
+Allow: /
+User-agent: PerplexityBot
+Allow: /
+User-agent: Google-Extended
+Allow: /
+User-agent: CCBot
+Allow: /
+
+Sitemap: https://flas-ai.github.io/sitemap.xml

@@ -3,9 +3,101 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>FLAS: Flow-based Activation Steering</title>
+
+  <!-- ============================================================ SEO -->
+  <title>FLAS: Flow-based Activation Steering for LLMs | Inference-Time Intervention</title>
   <meta name="description"
-        content="FLAS learns a concept-conditioned velocity field that transports an unsteered LLM activation to a steered one. The first learned steering method to consistently outperform in-context prompting on AxBench.">
+        content="FLAS is a flow-based activation steering method for large language models. A single concept-conditioned velocity field transports unsteered LLM activations to steered ones via N-step Euler integration — the first learned steering method to consistently outperform in-context prompting on AxBench (Gemma-2-2B and 9B).">
+  <meta name="keywords"
+        content="FLAS, Flow-based Activation Steering, activation steering, LLM steering, inference-time intervention, representation engineering, AxBench, Concept16k, Gemma-2, concept-conditioned velocity field, flow matching, LLM interpretability, mechanistic interpretability, steering vectors, ReFT, DiffMean, HyperSteer, Golden Gate Claude, controllable generation">
+  <meta name="author" content="Zehao Jin, Ruixuan Deng, Junran Wang, Xinjie Shen, Chao Zhang">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <meta name="googlebot" content="index, follow">
+  <link rel="canonical" href="https://flas-ai.github.io/">
+
+  <!-- Citation metadata for Google Scholar -->
+  <meta name="citation_title" content="Beyond Steering Vectors: Flow-based Activation Steering for Inference-Time Intervention">
+  <meta name="citation_author" content="Jin, Zehao">
+  <meta name="citation_author" content="Deng, Ruixuan">
+  <meta name="citation_author" content="Wang, Junran">
+  <meta name="citation_author" content="Shen, Xinjie">
+  <meta name="citation_author" content="Zhang, Chao">
+  <meta name="citation_publication_date" content="2026">
+  <meta name="citation_arxiv_id" content="2605.05892">
+  <meta name="citation_pdf_url" content="https://arxiv.org/pdf/2605.05892">
+  <meta name="citation_abstract_html_url" content="https://arxiv.org/abs/2605.05892">
+
+  <!-- Open Graph / Facebook / LinkedIn -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="FLAS — Flow-based Activation Steering">
+  <meta property="og:title" content="FLAS: Flow-based Activation Steering for LLMs">
+  <meta property="og:description" content="A single concept-conditioned velocity field steers LLM activations at inference time. First learned steering method to consistently outperform in-context prompting on AxBench.">
+  <meta property="og:url" content="https://flas-ai.github.io/">
+  <meta property="og:image" content="https://flas-ai.github.io/assets/main_small.png">
+  <meta property="og:image:alt" content="FLAS overview: a learned velocity field transports unsteered LLM activations into steered ones via flow integration.">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="en_US">
+  <meta property="article:published_time" content="2026">
+  <meta property="article:author" content="Zehao Jin">
+  <meta property="article:tag" content="LLM">
+  <meta property="article:tag" content="Activation Steering">
+  <meta property="article:tag" content="Interpretability">
+
+  <!-- Twitter / X Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="FLAS: Flow-based Activation Steering for LLMs">
+  <meta name="twitter:description" content="A single concept-conditioned velocity field steers LLM activations at inference time — first learned steering method to beat in-context prompting on AxBench.">
+  <meta name="twitter:image" content="https://flas-ai.github.io/assets/main_small.png">
+  <meta name="twitter:image:alt" content="FLAS overview diagram">
+
+  <!-- JSON-LD: ScholarlyArticle structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ScholarlyArticle",
+    "headline": "Beyond Steering Vectors: Flow-based Activation Steering for Inference-Time Intervention",
+    "name": "Beyond Steering Vectors: Flow-based Activation Steering for Inference-Time Intervention",
+    "alternateName": "FLAS",
+    "abstract": "We propose a flow-based adaptive, multistep, per-token steering operator that generalizes to natural-language concept descriptions without parameter tuning.",
+    "author": [
+      {"@type": "Person", "name": "Zehao Jin"},
+      {"@type": "Person", "name": "Ruixuan Deng"},
+      {"@type": "Person", "name": "Junran Wang"},
+      {"@type": "Person", "name": "Xinjie Shen"},
+      {"@type": "Person", "name": "Chao Zhang"}
+    ],
+    "datePublished": "2026",
+    "inLanguage": "en",
+    "url": "https://flas-ai.github.io/",
+    "image": "https://flas-ai.github.io/assets/main_small.png",
+    "identifier": [
+      {"@type": "PropertyValue", "propertyID": "arXiv", "value": "2605.05892"}
+    ],
+    "sameAs": [
+      "https://arxiv.org/abs/2605.05892",
+      "https://github.com/flas-ai/FLAS",
+      "https://huggingface.co/flas-ai",
+      "https://huggingface.co/spaces/Lunamos/flas-demo"
+    ],
+    "keywords": "activation steering, flow matching, large language models, inference-time intervention, AxBench, representation engineering, interpretability, Gemma-2",
+    "license": "https://www.apache.org/licenses/LICENSE-2.0",
+    "codeRepository": "https://github.com/flas-ai/FLAS",
+    "isAccessibleForFree": true
+  }
+  </script>
+
+  <!-- JSON-LD: WebSite (for sitelinks search) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "FLAS — Flow-based Activation Steering",
+    "url": "https://flas-ai.github.io/",
+    "description": "Project page for FLAS, a flow-based activation steering method for large language models.",
+    "inLanguage": "en"
+  }
+  </script>
 
   <!-- KaTeX -->
   <link rel="stylesheet"
@@ -35,6 +127,8 @@
 
   <link rel="stylesheet" href="css/site.css">
   <link rel="icon" type="image/png" href="assets/icon.png">
+  <link rel="apple-touch-icon" href="assets/icon.png">
+  <meta name="theme-color" content="#ffffff">
 
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-NQ4373CS41"></script>
@@ -51,7 +145,7 @@
 <aside class="sidenav" aria-label="Page navigation">
   <div class="sidenav-inner">
     <a class="sidenav-brand" href="#top" aria-label="FLAS home">
-      <img class="brand-logo" src="assets/icon.png" alt="FLAS">
+      <img class="brand-logo" src="assets/icon.png" alt="FLAS logo" width="40" height="40">
     </a>
     <nav>
       <ul class="sidenav-list">
@@ -65,9 +159,9 @@
       </ul>
     </nav>
     <div class="sidenav-foot">
-      <a href="https://github.com/flas-ai/FLAS"   class="sidenav-link">GitHub ↗</a>
-      <a href="https://arxiv.org/abs/2605.05892"  class="sidenav-link">arXiv ↗</a>
-      <a href="https://huggingface.co/spaces/Lunamos/flas-demo" class="sidenav-link">🤗 Demo ↗</a>
+      <a href="https://github.com/flas-ai/FLAS"   class="sidenav-link" rel="noopener external">GitHub ↗</a>
+      <a href="https://arxiv.org/abs/2605.05892"  class="sidenav-link" rel="noopener external">arXiv ↗</a>
+      <a href="https://huggingface.co/spaces/Lunamos/flas-demo" class="sidenav-link" rel="noopener external">🤗 Demo ↗</a>
     </div>
   </div>
 </aside>
@@ -125,7 +219,9 @@
     </p>
 
     <figure class="hero-figure">
-      <img src="assets/main.png" alt="FLAS overview diagram">
+      <img src="assets/main.png"
+           alt="FLAS overview: a concept-conditioned velocity field transports unsteered LLM activations to steered activations via N-step Euler integration at a chosen transformer layer."
+           width="6544" height="3568" fetchpriority="high" decoding="async">
     </figure>
   </div>
 </header>
@@ -195,7 +291,8 @@
 
     <figure class="paper-figure">
       <img src="assets/scores.png"
-           alt="Held-in HMean bar chart on Gemma-2-2B-IT plus the full AxBench results table on Gemma-2-2B-IT and Gemma-2-9B-IT, with FLAS leading both held-in and held-out columns.">
+           alt="Held-in HMean bar chart on Gemma-2-2B-IT plus the full AxBench results table on Gemma-2-2B-IT and Gemma-2-9B-IT, with FLAS leading both held-in and held-out columns."
+           loading="lazy" decoding="async">
       <figcaption>
         Held-in harmonic mean on Gemma-2-2B-IT (left) and full AxBench
         results on both models (right). FLAS reaches held-out HMean
@@ -286,7 +383,8 @@
 
     <figure class="paper-figure">
       <img src="assets/cif_tradeoff.png"
-           alt="Score decomposition (Concept incorporation, Instruction following, Fluency, HMean) versus flow time T, with FLAS held-in and held-out compared against ReFT-r1, DiffMean, and AcT on Gemma-2-9B-IT.">
+           alt="Score decomposition (Concept incorporation, Instruction following, Fluency, HMean) versus flow time T, with FLAS held-in and held-out compared against ReFT-r1, DiffMean, and AcT on Gemma-2-9B-IT."
+           loading="lazy" decoding="async">
       <figcaption>
         Score decomposition across flow time $T$ on Gemma-2-9B-IT,
         layer 20. FLAS held-in (purple) and held-out (blue) climb in
