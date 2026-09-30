@@ -7,7 +7,7 @@
   <!-- ============================================================ SEO -->
   <title>FLAS: Flow-based Activation Steering for LLMs | NeurIPS 2026</title>
   <meta name="description"
-        content="FLAS (NeurIPS 2026 Poster) is a flow-based activation steering method for large language models. A single concept-conditioned velocity field transports unsteered LLM activations to steered ones via N-step Euler integration — the first learned steering method to consistently outperform in-context prompting on AxBench (Gemma-2-2B and 9B).">
+        content="FLAS (NeurIPS 2026) is a flow-based activation steering method for large language models. A single concept-conditioned velocity field transports unsteered LLM activations to steered ones via N-step Euler integration — the first learned steering method to consistently outperform in-context prompting on AxBench (Gemma-2-2B and 9B).">
   <meta name="keywords"
         content="FLAS, NeurIPS 2026, Flow-based Activation Steering, activation steering, LLM steering, inference-time intervention, representation engineering, AxBench, Concept16k, Gemma-2, concept-conditioned velocity field, flow matching, LLM interpretability, mechanistic interpretability, steering vectors, ReFT, DiffMean, HyperSteer, Golden Gate Claude, controllable generation">
   <meta name="author" content="Zehao Jin, Ruixuan Deng, Junran Wang, Xinjie Shen, Chao Zhang">
@@ -32,7 +32,7 @@
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="FLAS — Flow-based Activation Steering">
   <meta property="og:title" content="FLAS: Flow-based Activation Steering for LLMs">
-  <meta property="og:description" content="NeurIPS 2026 Poster. A single concept-conditioned velocity field steers LLM activations at inference time. First learned steering method to consistently outperform in-context prompting on AxBench.">
+  <meta property="og:description" content="NeurIPS 2026. A single concept-conditioned velocity field steers LLM activations at inference time. First learned steering method to consistently outperform in-context prompting on AxBench.">
   <meta property="og:url" content="https://flas-ai.github.io/">
   <meta property="og:image" content="https://flas-ai.github.io/assets/main_small.png">
   <meta property="og:image:alt" content="FLAS overview: a learned velocity field transports unsteered LLM activations into steered ones via flow integration.">
@@ -48,7 +48,7 @@
   <!-- Twitter / X Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="FLAS: Flow-based Activation Steering for LLMs">
-  <meta name="twitter:description" content="NeurIPS 2026 Poster. A single concept-conditioned velocity field steers LLM activations at inference time — first learned steering method to beat in-context prompting on AxBench.">
+  <meta name="twitter:description" content="NeurIPS 2026. A single concept-conditioned velocity field steers LLM activations at inference time — first learned steering method to beat in-context prompting on AxBench.">
   <meta name="twitter:image" content="https://flas-ai.github.io/assets/main_small.png">
   <meta name="twitter:image:alt" content="FLAS overview diagram">
 
@@ -178,7 +178,7 @@
 <!-- ============================================================ HERO -->
 <header class="hero">
   <div class="container narrow">
-    <div class="hero-eyebrow"><span class="venue">NeurIPS 2026 · Poster</span><span class="eyebrow-dim">arXiv 2605.05892</span></div>
+    <div class="hero-eyebrow"><span class="venue">NeurIPS 2026</span> <span class="eyebrow-dim">arXiv 2605.05892</span></div>
     <h1 class="hero-title">
       Beyond Steering Vectors:<br>
       <span class="accent"><strong>Flow-based Activation Steering</strong></span><br>
@@ -200,18 +200,9 @@
       <a class="badge" href="https://github.com/flas-ai/FLAS">
         <span class="badge-key">Code</span><span class="badge-val">flas-ai/FLAS</span>
       </a>
-      <a class="badge" href="https://huggingface.co/flas-ai/flas-gemma-2-2b-it">
-        <span class="badge-key">🤗 Model</span><span class="badge-val">2B</span>
-      </a>
-      <a class="badge" href="https://huggingface.co/flas-ai/flas-gemma-2-9b-it">
-        <span class="badge-key">🤗 Model</span><span class="badge-val">9B</span>
-      </a>
-      <a class="badge" href="https://youtu.be/5Tg7fNdvvvs">
-        <span class="badge-key">▶ Video</span><span class="badge-val">YouTube</span>
-      </a>
-      <a class="badge" href="https://www.bilibili.com/video/BV16Wa76aEnL">
-        <span class="badge-key">▶ Video (CN)</span><span class="badge-val">Bilibili</span>
-      </a>
+      <span class="badge split">
+        <span class="badge-key">🤗 Models</span><a class="badge-val" href="https://huggingface.co/flas-ai/flas-gemma-2-2b-it">2B</a><a class="badge-val" href="https://huggingface.co/flas-ai/flas-gemma-2-9b-it">9B</a>
+      </span>
       <a class="badge primary" href="https://huggingface.co/spaces/Lunamos/flas-demo">
         <span class="badge-key">🤗 Demo</span><span class="badge-val">try it →</span>
       </a>
@@ -242,6 +233,8 @@
 <section id="video" class="section">
   <div class="container narrow">
     <h2><span class="section-num">1</span> Video</h2>
+  </div>
+  <div class="container video-wide">
     <div class="video-frame">
       <iframe src="https://www.youtube-nocookie.com/embed/5Tg7fNdvvvs"
               title="FLAS: Flow-based Activation Steering (video)"

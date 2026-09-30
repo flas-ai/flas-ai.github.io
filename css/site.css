@@ -236,17 +236,24 @@ code {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 8px 12px;
+  gap: 6px 10px;
+  text-transform: none;
+  letter-spacing: 0.02em;
+  font-size: 14px;
 }
 .venue {
   display: inline-block;
-  padding: 4px 11px;
+  padding: 3px 12px;
   border-radius: 999px;
   background: var(--accent);
   color: white;
-  letter-spacing: 0.06em;
 }
-.eyebrow-dim { color: var(--dim); font-weight: 500; }
+.eyebrow-dim {
+  color: var(--dim);
+  font-weight: 500;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+}
 
 .hero-title {
   font-family: 'Source Serif 4', Georgia, serif;
@@ -314,6 +321,15 @@ code {
   font-family: 'JetBrains Mono', monospace;
   font-size: 12.5px;
 }
+/* Badge whose value part holds several links (e.g. 2B / 9B models) */
+.badge.split:hover { transform: none; box-shadow: none; border-color: var(--line); }
+.badge.split a.badge-val {
+  color: var(--ink-soft);
+  border-bottom: none;
+}
+.badge.split a.badge-val + a.badge-val { border-left: 1px solid var(--line); }
+.badge.split a.badge-val:hover { color: var(--accent); background: var(--accent-soft); }
+
 .badge.primary {
   background: var(--accent);
   border-color: var(--accent);
@@ -655,9 +671,9 @@ select:focus { outline: 2px solid var(--accent-soft); border-color: var(--accent
 }
 
 /* =============================================== VIDEO */
+.video-wide { margin-top: 22px; }
 .video-frame {
   position: relative;
-  margin-top: 22px;
   aspect-ratio: 16 / 9;
   border-radius: var(--radius);
   overflow: hidden;
