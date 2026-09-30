@@ -283,6 +283,10 @@ code {
   margin-bottom: 22px;
 }
 .authors span { white-space: nowrap; }
+.author-link,
+.author-link:visited,
+.author-link:active { color: inherit; border-bottom-color: transparent; }
+.author-link:hover { color: inherit; border-bottom-color: currentColor; }
 
 .badges {
   display: flex;
