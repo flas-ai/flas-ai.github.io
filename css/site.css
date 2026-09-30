@@ -29,6 +29,9 @@
 
 * { box-sizing: border-box; }
 
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
 html, body {
   margin: 0;
   padding: 0;
@@ -228,6 +231,22 @@ code {
   font-weight: 600;
   margin-bottom: 12px;
 }
+
+.hero-eyebrow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+}
+.venue {
+  display: inline-block;
+  padding: 4px 11px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: white;
+  letter-spacing: 0.06em;
+}
+.eyebrow-dim { color: var(--dim); font-weight: 500; }
 
 .hero-title {
   font-family: 'Source Serif 4', Georgia, serif;
@@ -634,6 +653,40 @@ select:focus { outline: 2px solid var(--accent-soft); border-color: var(--accent
   color: var(--dim);
   text-align: left;
 }
+
+/* =============================================== VIDEO */
+.video-frame {
+  position: relative;
+  margin-top: 22px;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-md);
+  background: #000;
+}
+.video-frame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+.video-cn {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 18px;
+  margin-top: 14px;
+  padding: 12px 18px;
+  background: var(--bg-tint);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  font-size: 14.5px;
+  color: var(--ink-soft);
+}
+.video-cn a { font-family: 'JetBrains Mono', monospace; font-size: 13px; }
 
 /* =============================================== DEMO IFRAME */
 .demo-card {
